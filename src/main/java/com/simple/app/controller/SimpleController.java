@@ -4,6 +4,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -23,12 +24,10 @@ import com.simple.app.userserviceimplement.UserDao;
 
 @Controller
 public class SimpleController {
-
 	@Autowired
 	IUserService userservice;
-	
-	private static final Logger logger = LoggerFactory
-			.getLogger(SimpleController.class);
+
+	private static final Logger logger = LoggerFactory.getLogger(SimpleController.class);
 
 	@RequestMapping(value = "/")
 	public String index(ModelMap model) {
@@ -36,61 +35,78 @@ public class SimpleController {
 		return "listUser";
 	}
 
-	@RequestMapping(value = "/addUser", method = RequestMethod.POST)
-	public String addUser(ModelMap map,
-			@RequestParam("btnAddNSearch") String btn) {
+	@RequestMapping(value = "/addUserNSearch", method = RequestMethod.POST)
+	public String addUserNSearch(ModelMap model, @RequestParam("btnAddNSearch") String btn,@RequestParam(value="txtSearch",required=false) String searchName) {
 		if (btn.equals("Add New")) {
 			return "adduser";
 		} else {
-			return "ggg";
+			model.addAttribute("list",userservice.searchUser(searchName));
+			return "listUser";
 		}
 
 	}
 
-	@RequestMapping(value = "/addUserAction",method=RequestMethod.POST)
-	public String addUserAction(@RequestParam("file")  MultipartFile file,
-			HttpServletRequest request, ModelMap model) {
-		System.out.println("olo");
+	@RequestMapping(value = "/addUserAction", method = RequestMethod.POST)
+	public String addUserAction(@RequestParam("file") MultipartFile file, HttpServletRequest request, ModelMap model,
+			@ModelAttribute("users") UserDto users) {
 		String filename = file.getOriginalFilename();
 
 		if (!file.isEmpty()) {
+
 			try {
 
-					filename = filename+ "-"+".jpg";
-				
-				
+				// filename = filename+ "-"+".jpg";
+
 				byte[] bytes = file.getBytes();
 
 				// creating the directory to store file
-				String savePath = request.getSession().getServletContext().getRealPath("/resources/upload/profile/");
+				String savePath = request.getSession().getServletContext().getRealPath("/resources/upload/");
 				System.out.println(savePath);
 				File path = new File(savePath);
-				if(!path.exists()){
+				if (!path.exists()) {
 					path.mkdir();
 				}
-				
+
 				// creating the file on server
-				File serverFile = new File(savePath + File.separator + filename );
+				File serverFile = new File(savePath + File.separator + filename);
 				BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(serverFile));
 				stream.write(bytes);
 				stream.close();
-				
-				//student.setImage(filename);
-				
-				
+
+				users.setImageURL(filename);
+
 				System.out.println(serverFile.getAbsolutePath());
 				System.out.println("You are successfully uploaded file " + filename);
-				
 
 			} catch (Exception e) {
-				System.out.println("You are failed to upload " + filename
-						+ " => " + e.getMessage());
+				System.out.println("You are failed to upload " + filename + " => " + e.getMessage());
 			}
 		} else {
-			System.out.println("You are failed to upload " + filename
-					+ " because the file was empty!");
+			users.setImageURL("Null");
+			System.out.println("You are failed to upload " + filename + " because the file was empty!");
 		}
-
-		return "listUser";
+		userservice.insertUser(users);
+		return "redirect:/";
 	}
+	@RequestMapping(value="/viewUpdateDeleteUser",method=RequestMethod.POST)
+	public String userAction(ModelMap model,@RequestParam("userId") int id,@RequestParam("btnViewUpdateDelete") String btn){
+		if(btn.equals("View")){
+			return "viewUser";
+		}else if(btn.equals("Update")){
+			System.out.println("fk");
+			model.addAttribute("user",userservice.getUserById(id));
+			return "adduser";
+		}else{
+			userservice.deleteUser(id);
+			return "redirect:/";
+		}
+	}
+	// @RequestMapping(value="/test",method=RequestMethod.POST)
+	// public String test(@ModelAttribute("users") UserDto users){
+	// System.out.println(users.getBirthdate());
+	// System.out.println(users.getRegisterDate());
+	// userservice.insertUser(users);
+	// System.out.println("olo");
+	// return "redirect:/";
+	// }
 }

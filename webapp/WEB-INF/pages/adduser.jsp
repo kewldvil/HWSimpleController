@@ -1,7 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <%@page
-	import="java.util.Date,java.text.DateFormat,java.text.SimpleDateFormat"%>
+	import="java.util.Date,java.text.DateFormat,java.text.SimpleDateFormat,com.simple.app.entities.*"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -79,7 +82,7 @@ input[type=text],input[type=password],input[type=email],input[type=date]{
 							<div class='col-md-8'>
 								<div class='form-group internal'>
 									<input class='form-control' name='username'
-										placeholder='Username' type='text'>
+										placeholder='Username' type='text' value="${user.username}">
 								</div>
 							</div>
 						</div>
@@ -90,7 +93,7 @@ input[type=text],input[type=password],input[type=email],input[type=date]{
 							<div class='col-md-8'>
 								<div class='form-group internal'>
 									<input class='form-control' name='email' placeholder='email'
-										type='email'>
+										type='email' value="${user.email}">
 								</div>
 							</div>
 						</div>
@@ -101,7 +104,7 @@ input[type=text],input[type=password],input[type=email],input[type=date]{
 							<div class='col-md-8'>
 								<div class='form-group internal'>
 									<input class='form-control' name='password'
-										placeholder='Password' type='password'>
+										placeholder='Password' type='password' value="${user.email}">
 								</div>
 							</div>
 						</div>
@@ -112,7 +115,7 @@ input[type=text],input[type=password],input[type=email],input[type=date]{
 						<div class='col-md-8'>
 							<div class='col-md-8'>
 								<div class='form-group internal'>
-									<input class='form-control' name='birthdate' placeholder='Birth Of Date' type='date'>
+									<input class='form-control' name='birthdate' placeholder='Birth Of Date' type='date' value="${user.birthdate}"> 
 								</div>
 							</div>
 						</div>
@@ -123,13 +126,11 @@ input[type=text],input[type=password],input[type=email],input[type=date]{
 						<div class='col-md-8'>
 							<div class='col-md-8'>
 								<div class='form-group internal'>
-									<%
-										DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-										Date date = new Date();
-									%>
+									<c:set var="now" value="<%=new java.util.Date()%>" />
+									<%-- <c:set var="registerdate" value="${user.registerDate} " /> --%>
 									<input class='form-control' name='registerDate'
 										placeholder='Register Date' type='text'
-										value="<%=dateFormat.format(date)%>" readonly="readonly">
+										value='<c:if test="${empty user.registerDate}"><fmt:formatDate value="${now}" type="date" pattern="yyyy-MM-dd" /></c:if><c:if test="${not empty user.registerDate}"><c:out value="${user.registerDate}" escapeXml="false" /></c:if>' readonly="readonly">
 								</div>
 							</div>
 						</div>

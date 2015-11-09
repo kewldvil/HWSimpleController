@@ -1,7 +1,11 @@
 package com.simple.app.entities;
 
+
+
 import java.sql.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
 
 public class UserDto {
 	private int id;
@@ -11,7 +15,6 @@ public class UserDto {
 	private Date birthdate;
 	private Date registerDate;
 	private String imageURL;
-	
 	public int getId() {
 		return id;
 	}
@@ -54,4 +57,6 @@ public class UserDto {
 	public void setImageURL(String imageURL) {
 		this.imageURL = imageURL;
 	}
+	
+	
 }

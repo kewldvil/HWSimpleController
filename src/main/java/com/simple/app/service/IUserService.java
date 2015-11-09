@@ -9,5 +9,6 @@ public interface IUserService {
 	public boolean updateUser(UserDto users);
 	public boolean deleteUser(int id);
 	public ArrayList<UserDto> listUser();
-	public UserDto getStudentById(int id);
+	public UserDto getUserById(int id);
+	public ArrayList<UserDto> searchUser(String searchName);
 }

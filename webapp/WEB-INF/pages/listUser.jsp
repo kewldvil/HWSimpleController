@@ -49,7 +49,7 @@
 		<div class="col-lg-8 col-lg-offset-2">
 			<div class="row" style="margin-bottom:5px;">
 				<div class="col-lg-12">
-					<form action="${pageContext.request.contextPath }/addUser" class="form-inline" method="post">
+					<form action="${pageContext.request.contextPath }/addUserNSearch" class="form-inline" method="post">
 							<input type="submit" name="btnAddNSearch" value="Add New" class="btn btn-primary">
 							<input type="submit" name="btnAddNSearch" value="Search" class="btn btn-default pull-right">&nbsp;
 							<div class="form-group pull-right">
@@ -87,17 +87,11 @@
 										<td>${student.registerDate}</td>
 										<td>${student.imageURL}</td>
 										<td class="form-submit">
-											<form action="#" method="post">
-												<input type="hidden" name="id" value="${student.id}">
-												<input type="submit" name="btnView" value="View" class="btn btn-primary btn-sm">
-											</form>
-											<form action="#" method="post">
-												<input type="hidden" name="id" value="${student.id}">
-												<input type="submit" name="btnUpdate" value="Update" class="btn btn-warning btn-sm">
-											</form>
-											<form action="#" method="post">
-												<input type="hidden" name="id" value="${student.id}">
-												<input type="submit" name="btnDelete" value="Delete" class="btn btn-danger btn-sm">
+											<form action="${pageContext.request.contextPath}/viewUpdateDeleteUser" method="post">
+												<input type="hidden" name="userId" value="${student.id}">
+												<input type="submit" name="btnViewUpdateDelete" value="View" class="btn btn-primary btn-sm">
+												<input type="submit" name="btnViewUpdateDelete" value="Update" class="btn btn-warning btn-sm">
+												<input type="submit" name="btnViewUpdateDelete" value="Delete" class="btn btn-danger btn-sm">
 											</form>
 										</td>
 									</tr>	
