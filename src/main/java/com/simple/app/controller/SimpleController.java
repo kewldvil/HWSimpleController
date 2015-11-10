@@ -27,7 +27,8 @@ public class SimpleController {
 	@Autowired
 	IUserService userservice;
 
-	private static final Logger logger = LoggerFactory.getLogger(SimpleController.class);
+	private static final Logger logger = LoggerFactory
+			.getLogger(SimpleController.class);
 
 	@RequestMapping(value = "/")
 	public String index(ModelMap model) {
@@ -36,68 +37,145 @@ public class SimpleController {
 	}
 
 	@RequestMapping(value = "/addUserNSearch", method = RequestMethod.POST)
-	public String addUserNSearch(ModelMap model, @RequestParam("btnAddNSearch") String btn,@RequestParam(value="txtSearch",required=false) String searchName) {
+	public String addUserNSearch(
+			ModelMap model,
+			@RequestParam("btnAddNSearch") String btn,
+			@RequestParam(value = "txtSearch", required = false) String searchName) {
 		if (btn.equals("Add New")) {
+			model.addAttribute("btn", "Add");
+			model.addAttribute("action", "addUserAction");
+			model.addAttribute("formTitle", "New User - Form");
 			return "adduser";
 		} else {
-			model.addAttribute("list",userservice.searchUser(searchName));
+			model.addAttribute("list", userservice.searchUser(searchName));
 			return "listUser";
 		}
 
 	}
 
 	@RequestMapping(value = "/addUserAction", method = RequestMethod.POST)
-	public String addUserAction(@RequestParam("file") MultipartFile file, HttpServletRequest request, ModelMap model,
+	public String addUserAction(@RequestParam("file") MultipartFile file,
+			HttpServletRequest request, ModelMap model,
+			@RequestParam("btnAddNCancel") String btn,
 			@ModelAttribute("users") UserDto users) {
-		String filename = file.getOriginalFilename();
-
-		if (!file.isEmpty()) {
-
-			try {
-
-				// filename = filename+ "-"+".jpg";
-
-				byte[] bytes = file.getBytes();
-
-				// creating the directory to store file
-				String savePath = request.getSession().getServletContext().getRealPath("/resources/upload/");
-				System.out.println(savePath);
-				File path = new File(savePath);
-				if (!path.exists()) {
-					path.mkdir();
-				}
-
-				// creating the file on server
-				File serverFile = new File(savePath + File.separator + filename);
-				BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(serverFile));
-				stream.write(bytes);
-				stream.close();
-
-				users.setImageURL(filename);
-
-				System.out.println(serverFile.getAbsolutePath());
-				System.out.println("You are successfully uploaded file " + filename);
-
-			} catch (Exception e) {
-				System.out.println("You are failed to upload " + filename + " => " + e.getMessage());
-			}
+		
+		if (btn.equals("Cancel")) {
+			return "redirect:/";
 		} else {
-			users.setImageURL("Null");
-			System.out.println("You are failed to upload " + filename + " because the file was empty!");
+			String filename = file.getOriginalFilename();
+			if (!file.isEmpty()) {
+
+				try {
+
+					// filename = filename+ "-"+".jpg";
+
+					byte[] bytes = file.getBytes();
+
+					// creating the directory to store file
+					String savePath = request.getSession().getServletContext()
+							.getRealPath("/resources/upload/");
+					System.out.println(savePath);
+					File path = new File(savePath);
+					if (!path.exists()) {
+						path.mkdir();
+					}
+
+					// creating the file on server
+					File serverFile = new File(savePath + File.separator
+							+ filename);
+					BufferedOutputStream stream = new BufferedOutputStream(
+							new FileOutputStream(serverFile));
+					stream.write(bytes);
+					stream.close();
+
+					users.setImageURL(filename);
+
+					System.out.println(serverFile.getAbsolutePath());
+					System.out.println("You are successfully uploaded file "
+							+ filename);
+
+				} catch (Exception e) {
+					System.out.println("You are failed to upload " + filename
+							+ " => " + e.getMessage());
+				}
+			} else {
+				users.setImageURL("Null");
+				System.out.println("You are failed to upload " + filename
+						+ " because the file was empty!");
+			}
+			userservice.insertUser(users);
+			return "redirect:/";
 		}
-		userservice.insertUser(users);
-		return "redirect:/";
 	}
-	@RequestMapping(value="/viewUpdateDeleteUser",method=RequestMethod.POST)
-	public String userAction(ModelMap model,@RequestParam("userId") int id,@RequestParam("btnViewUpdateDelete") String btn){
-		if(btn.equals("View")){
+
+	@RequestMapping(value = "/viewUpdateDeleteUser", method = RequestMethod.POST)
+	public String userAction(ModelMap model, @RequestParam("userId") int id,
+			@RequestParam("btnViewUpdateDelete") String btn) {
+		if (btn.equals("View")) {
 			return "viewUser";
-		}else if(btn.equals("Update")){
-			System.out.println("fk");
-			model.addAttribute("user",userservice.getUserById(id));
+		} else if (btn.equals("Update")) {
+			model.addAttribute("btn", "Save");
+			model.addAttribute("action", "updateUserAction");
+			model.addAttribute("formTitle", "Update User - Form");
+			model.addAttribute("user", userservice.getUserById(id));
 			return "adduser";
-		}else{
+		} else {
 			userservice.deleteUser(id);
+			return "redirect:/";
+		}
+	}
+
+	@RequestMapping(value = "/updateUserAction", method = RequestMethod.POST)
+	public String updateUserAction(@RequestParam("file") MultipartFile file,
+			HttpServletRequest request, ModelMap model,
+			@RequestParam("btnAddNCancel") String btn,
+			@ModelAttribute("users") UserDto users) {
+		if (btn.equals("Cancel")) {
+			return "redirect:/";
+		} else {
+			String filename = file.getOriginalFilename();
+
+			if (!file.isEmpty()) {
+
+				try {
+
+					// filename = filename+ "-"+".jpg";
+
+					byte[] bytes = file.getBytes();
+
+					// creating the directory to store file
+					String savePath = request.getSession().getServletContext()
+							.getRealPath("/resources/upload/");
+					System.out.println(savePath);
+					File path = new File(savePath);
+					if (!path.exists()) {
+						path.mkdir();
+					}
+
+					// creating the file on server
+					File serverFile = new File(savePath + File.separator
+							+ filename);
+					BufferedOutputStream stream = new BufferedOutputStream(
+							new FileOutputStream(serverFile));
+					stream.write(bytes);
+					stream.close();
+
+					users.setImageURL(filename);
+
+					System.out.println(serverFile.getAbsolutePath());
+					System.out.println("You are successfully uploaded file "
+							+ filename);
+
+				} catch (Exception e) {
+					System.out.println("You are failed to upload " + filename
+							+ " => " + e.getMessage());
+				}
+			} else {
+				users.setImageURL("Null");
+				System.out.println("You are failed to upload " + filename
+						+ " because the file was empty!");
+			}
+			userservice.updateUser(users);
 			return "redirect:/";
 		}
 	}

@@ -72,10 +72,14 @@ input[type=text],input[type=password],input[type=email],input[type=date]{
 	<div class='container'>
 		<div class='panel panel-primary dialog-panel'>
 			<div class='panel-heading'>
-				<h1>New User - Form</h1>
+				<h1>${formTitle}</h1>
 			</div>
 			<div class='panel-body'>
-				<form class='form-horizontal' role='form' enctype="multipart/form-data" method="post" action="${pageContext.request.contextPath}/addUserAction">
+				<form class='form-horizontal' role='form' enctype="multipart/form-data" method="post" action="${pageContext.request.contextPath}/${action}">
+					<c:if test="${btn eq 'Save'}">
+						<input type="hidden" name="id" value="${user.id }"/>
+					</c:if>
+						
 					<div class='form-group'>
 						<label class='control-label col-md-2 col-md-offset-2'>Username</label>
 						<div class='col-md-8'>
@@ -137,24 +141,43 @@ input[type=text],input[type=password],input[type=email],input[type=date]{
 					</div>
 					<div class="form-group ">
 						<div class='col-md-8 col-md-offset-4'>
-							<div class="fileinput fileinput-new" data-provides="fileinput">
-								<div class="fileinput-preview thumbnail"
-									data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
-								<div>
-									<span class="btn btn-default btn-file"><span
-										class="fileinput-new">Select image</span><span
-										class="fileinput-exists">Change</span><input type="file"
-										name="file"></span> <a href="#"
-										class="btn btn-default fileinput-exists"
-										data-dismiss="fileinput">Remove</a>
+							<c:if test="${empty user.imageURL }">
+								<div class="fileinput fileinput-new" data-provides="fileinput">
+									<div class="fileinput-preview thumbnail"
+										data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+									<div>
+										<!-- <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;"></div> -->
+										<span class="btn btn-default btn-file"><span
+											class="fileinput-new">Select image</span><span
+											class="fileinput-exists">Change</span><input type="file"
+											name="file"></span> <a href="#"
+											class="btn btn-default fileinput-exists"
+											data-dismiss="fileinput">Remove</a>
+									</div>
 								</div>
-							</div>
+							</c:if>
+							
+							<c:if test="${not empty user.imageURL }">
+								<div class="fileinput fileinput-exist" data-provides="fileinput">
+									<div class="fileinput-preview thumbnail"
+										data-trigger="fileinput" style="width: 200px; height: 150px;"><img src="${pageContext.request.contextPath}/resources/upload/${user.imageURL}" /></div>
+									<div>
+										<span class="btn btn-default btn-file"><span
+											class="fileinput-new">Select image</span><span
+											class="fileinput-exists">Change</span><input type="file"
+											name="file"></span> <a href="#"
+											class="btn btn-default fileinput-exists"
+											data-dismiss="fileinput">Remove</a>
+									</div>
+								</div>
+							</c:if>
+							
 						</div>
 					</div>
 					<div class='form-group'>
             <div class='col-md-8 col-md-offset-4'>
   					   <div class='col-md-6' style="padding-left:0px;">
-  						  <input type="submit" name="btnAddNCancel" value="Add" class="btn btn-primary ">
+  						  <input type="submit" name="btnAddNCancel" value="${btn}" class="btn btn-primary ">
   							<input type="submit" name="btnAddNCancel" value="Cancel" class="btn btn-danger ">
   						 </div>
             </div>

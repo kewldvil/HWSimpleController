@@ -17,7 +17,7 @@
 		color: #ffffff;
   		text-transform: uppercase;
   		letter-spacing: 2px;
-  		font-size: 20px;
+  		font-size: 17px;
   		text-align: center;
   		font-weight: 700;
 	}
@@ -36,8 +36,13 @@
 
 	.form-submit form{
 		display: inline-block;
+		
 	}
-
+	
+	td:not(:nth-child(7))  {
+  		line-height: 100px !important;
+	}
+	
 
 </style>
 </head>
@@ -85,7 +90,7 @@
 										<td>**********</td>
 										<td>${student.birthdate}</td>
 										<td>${student.registerDate}</td>
-										<td>${student.imageURL}</td>
+										<td ><img src="${pageContext.request.contextPath}/resources/upload/${student.imageURL}" class="img-responsive" style="height:100px;width:100px"/></td>
 										<td class="form-submit">
 											<form action="${pageContext.request.contextPath}/viewUpdateDeleteUser" method="post">
 												<input type="hidden" name="userId" value="${student.id}">

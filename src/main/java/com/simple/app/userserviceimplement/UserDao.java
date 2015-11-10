@@ -47,7 +47,6 @@ public class UserDao implements IUserService {
 	@Override
 	public boolean updateUser(UserDto users) {
 		String sql = "UPDATE tbuser set email=?,username=?,password=?,birthdate=?,image=? where id=?";
-		ArrayList<UserDto> arr = new ArrayList<UserDto>();
 		try (
 				Connection con = dataSource.getConnection();
 				PreparedStatement ps = con.prepareStatement(sql);
